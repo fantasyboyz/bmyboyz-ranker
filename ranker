@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B:MY BOYZ RANKER</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fafafa;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.2em;
+    }
+    p {
+      color: #777;
+    }
+    .ranker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+    }
+    .top8 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 20px;
+      max-width: 400px;
+      margin-bottom: 30px;
+    }
+    .top-slot {
+      position: relative;
+      border: 2px dashed #bbb;
+      border-radius: 12px;
+      width: 100px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+    }
+    .top-slot-number {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      background: #ff8fa3;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8em;
+    }
+    .card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      width: 100px;
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+      cursor: move;
+    }
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .card span {
+      margin-top: 5px;
+      font-size: 0.85em;
+    }
+    .all-members {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>B:MY BOYZ RANKER</h1>
+  <p>Make your final Top 8</p>
+
+  <div class="ranker">
+    <div class="top8" id="top8">
+      <!-- Top 8 numbered slots -->
+    </div>
+
+    <h3>All Participants</h3>
+    <div class="all-members" id="allMembers">
+      <!-- Cards auto-filled -->
+    </div>
+  </div>
+
+  <script>
+    const members = [
+      "Kang Junseong", "Kim Bohyeon", "Kim Jeonghoon", "Ban Daniel", "Choi Yohan", "Hwang Heewoo",
+      "Jang Huigwang", "Jang Won", "Lee Junmyeong", "Lee Seongin", "Lee Yeontae", "Lee Yunsung",
+      "Lim Jihwan", "Park Junhyeok", "Park Sechan", "Seo Junhyeok", "Ai", "Haruto", "Hiroto",
+      "Hyo", "Ikuto", "Kai", "William", "Didi", "Li Zhiwei", "Moon Jaeil",
+      "Suthaschai", "Yang Chengxi", "Yang Hyeonbin"
+    ];
+
+    const allMembers = document.getElementById("allMembers");
+    const top8 = document.getElementById("top8");
+
+    // Crear espacios vacíos con número
+    for (let i = 1; i <= 8; i++) {
+      const slot = document.createElement("div");
+      slot.className = "top-slot";
+      slot.id = `slot-${i}`;
+      slot.addEventListener("dragover", (e) => e.preventDefault());
+      slot.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (slot.children.length > 1) return;
+        const draggedId = e.dataTransfer.getData("text/id");
+        const draggedCard = document.getElementById(draggedId);
+        if (!draggedCard) return;
+        slot.appendChild(draggedCard);
+      });
+      const number = document.createElement("div");
+      number.className = "top-slot-number";
+      number.textContent = i;
+      slot.appendChild(number);
+      top8.appendChild(slot);
+    }
+
+    members.forEach((name, index) => {
+      const id = `member-${index}`;
+      const card = document.createElement("div");
+      card.className = "card";
+      card.id = id;
+      card.draggable = true;
+      card.innerHTML = `
+        <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=${encodeURIComponent(name)}" alt="${name}" />
+        <span>${name}</span>
+      `;
+
+      card.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/id", id);
+        e.dataTransfer.effectAllowed = "move";
+      });
+
+      allMembers.appendChild(card);
+    });
+  </script>
+</body>
+</html>
